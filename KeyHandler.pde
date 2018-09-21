@@ -1,4 +1,4 @@
-StringList keyList = new StringList("87", "83", "65", "68");
+StringList keyList = new StringList("87", "83", "65", "68", "32");
 
 void keyPressed() {
   keyHandler(str(keyCode), 0);
