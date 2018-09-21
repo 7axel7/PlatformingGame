@@ -14,17 +14,12 @@ class Player {
   float maxfallspeed = 8;
   boolean grounded = false;
   boolean lastgrounded = false;
-  boolean[] keys = new boolean[16];
+  boolean[] keys = new boolean[32];
   Player(float x, float y) {
     this.x = x;
     this.y = y;
     spawnx = x;
     spawny = y;
-  }
-
-  void update() {
-    this.move();
-    this.display();
   }
 
   void effect(int type) {
@@ -39,17 +34,17 @@ class Player {
   }
 
   void display() {
-    rectMode(CENTER);
-    fill(pcolor);
+    if (tasMaster) {
+      fill(pcolor);
+      rect(cloneX, cloneY, p.size, p.size);
+      rectMode(CENTER);
+    }
+
 
     rect(x, y, size, size);
   }
   void move() {
     float newx = x;
-    if (keys[4]) {
-      newx-=speed;
-      keys[4] = false;
-    }
     if (keys[2]) {
       newx-=speed;
     }
@@ -57,7 +52,10 @@ class Player {
       newx+=speed;
     }
     int tiletouch = collision(newx, y, size);
-    if (tiletouch > 1) {effect(tiletouch);newx = x;}
+    if (tiletouch > 1) {
+      effect(tiletouch);
+      newx = x;
+    }
     if (tiletouch == 0) {
       this.x = newx;
     }
@@ -103,11 +101,13 @@ class Player {
 }
 
 int collision(float x, float y, float size) {
+  int type = 0;
   for (int i = tiles.size()-1; i >=0; i--) {
     Tile tile = tiles.get(i);
     if (tile.x+tile.size/2 > x-size/2 && tile.x-tile.size/2 < x+size/2
       && tile.y+tile.size/2 > y-size/2 && tile.y-tile.size/2 < y+size/2)
-      return tile.type;
+      if (type < tile.type)
+        type = tile.type;
   }
-  return 0;
+  return type;
 }
