@@ -36,19 +36,19 @@ class Player {
   void display() {
     if (tasMaster) {
       fill(pcolor);
-      rect(cloneX, cloneY, p.size, p.size);
+      rect((cloneX-CX)*SM, (cloneY-CY)*SM, p.size*SM, p.size*SM);
       rectMode(CENTER);
     }
 
 
-    rect(x, y, size, size);
+    rect((x-CX)*SM, (y-CY)*SM, size*SM, size*SM);
   }
   void move() {
     float newx = x;
-    if (keys[2]) {
+    if (keys[2]&& !choosingFile) {
       newx-=speed;
     }
-    if (keys[3]) {
+    if (keys[3]&& !choosingFile) {
       newx+=speed;
     }
     int tiletouch = collision(newx, y, size);
@@ -62,7 +62,7 @@ class Player {
 
     float newy = y;
 
-    if (keys[0] && jumps > 0) {
+    if (keys[0] && jumps > 0&& !choosingFile) {
       if (grounded!= true) jumps -=1;
       keys[0] = false;
       dy=-jumpheight;

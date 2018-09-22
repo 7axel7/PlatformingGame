@@ -16,7 +16,7 @@ class Tile {
     rectMode(CENTER);
     if (type == 1)fill(100, 0, 100);
     else if (type == 2){fill(255,0,0);}
-    rect(x, y, size, size);
+    rect((x-CX)*SM, (y-CY)*SM, size*SM, size*SM);
   }
 }
 

@@ -30,13 +30,35 @@ boolean pause = false;
 boolean frameSkip = false;
 int gameSpeed = 1;
 int t;
+int[] selectedfile = {0, 0};
 
+int[] selected = {0, 0};
 int[][] map;
 String[] filenames;
+String[][] filenames2;
+float SM = 0.1;
+float CX = 0;
+float CY = 0;
 
 void setup() {
-  size(800, 800);
+  surface.setResizable(true);
+  size(2000, 2000);
   startGame();
+  SM = (float) min(width, height)/800;
+}
+
+void goToMap(int[] selected, String[][] filenames) {
+  String fileName = filenames[selected[0]][selected[1]];
+  fileName += ".txt";
+  String[] lines = loadStrings("/maps/" + fileName);
+  String[] info = lines[0].split(",");
+  mapwidth = int(info[0]);
+  mapheight = int(info[1]);
+  p.spawnx = int(info[2])*mapwidth;
+  p.spawny = int(info[3])*mapheight;
+  for (int i = 1; i < lines.length; i++) {
+    println(lines[i]);
+  }
 }
 
 String[] listFileNames(String dir) {
@@ -51,24 +73,70 @@ String[] listFileNames(String dir) {
 }
 
 void chooseFileInit() {
-  println("Listing all filenames in a directory: ");
+  //println("Listing all filenames in a directory: ");
   String path = sketchPath()+ "/maps";
   filenames = listFileNames(path);
-  printArray(filenames);
+  for (int i = 0; i < filenames.length; i ++) {
+    filenames[i] = filenames[i].substring(0, filenames[i].length()-4);
+  }
+  filenames2 = new String[int(filenames.length/5+1)][5];
+  for (int i = 0; i < filenames.length; i ++) {
+    filenames2[int(i/5)][i%5] = filenames[i];
+  }
 }
 
 void chooseFile() {
   fill(100);
-  rect(width/2, height/2, width*3/4, height*3/4);
-  for (int i = 0; i < filenames.length; i++) {
-    fill(200);
-    float x = width*1/4+width*1/8*i;
-    float y = height*1/4;
-    rectMode(CENTER);
-    rect(x, y, width*1/12, height*1/12);
-    fill(0);
-    textAlign(CENTER);
-    text(filenames[i], x, y);
+  rect(width/2, height/2, width*3/4, height*3/4);        
+  for (int i = 0; i < filenames2.length; i++) {
+    for (int j = 0; j < filenames2[0].length; j++) {
+      if (filenames2[i][j]!= null) {
+        fill(200);
+        if (selected[0] == i && selected[1] == j) {
+          fill(150);
+        }
+
+        float x = width*1/4+width*1/8*j;
+        float y = height*1/4+width*1/8*i;
+        float xsize = width*1/12;
+        float ysize = height*1/12;
+        rectMode(CENTER);
+        rect(x, y, xsize, ysize);
+        if (p.keys[0] && selected[0] > 0) {
+          p.keys[0] = false;
+          selected[0] -=1;
+        } else if (p.keys[1] && selected[0] < filenames2.length-1 && (selected[0]+1)*5+selected[1] < filenames.length) {
+          p.keys[1] = false;
+          selected[0] +=1;
+        } else if (p.keys[2] && selected[1] > 0) {
+          p.keys[2] = false;
+          selected[1] -=1;
+        } else if (p.keys[3] && selected[1] < filenames2[0].length-1&& (selected[0])*5+selected[1]+1 < filenames.length) {
+          p.keys[3] = false;
+          selected[1] +=1;
+        }
+        if (p.keys[6]) {
+          p.keys[6] = false;
+          goToMap(selected, filenames2);
+        }
+
+
+
+
+        if (collisionBox(x, y, xsize, ysize, mouseX, mouseY) && mouse) {
+          if (selected[0] == i && selected[1] == j) {
+            println(i, j);
+          }
+          selected[0] = i;
+          selected[1] = j;
+          mouse = false;
+        }
+
+        fill(0);
+        textAlign(CENTER);
+        text(filenames2[i][j], x, y);
+      }
+    }
   }
 }
 
@@ -79,7 +147,7 @@ void startGame() {
     for (int i = 0; i < 20; i++) {
       createTile(3 + i, 10+6*j, 1);
       if (i % 4 == 0) 
-        createTile(3+i, 10-1+6*j, 1);
+      createTile(3+i, 10-1+6*j, 1);
       if (i % 16 == 0) {
         createTile(3+i, 10-2*j, 1);
         createTile(4+i, 10-4+6*j, 2);
@@ -131,13 +199,13 @@ void tasUpdate() {
     p.keys[5] = false;
     pause = !pause;
   }
-  if (p.keys[6]) { 
+  if (p.keys[6]&&!choosingFile) { 
     p.keys[6] = false;
     frameSkip = true;
   }
   for (int i = 0; i < 3; i++) {
     fill(80*i, 200, 70+255-80*i);
-    rect(state[i][1], state[i][2], p.size/2, p.size/2);
+    rect((state[i][1]-CX)*SM, (state[i][2]-CY)*SM, p.size/2*SM, p.size/2*SM);
     rectMode(CENTER);
     if (p.keys[11+i]) {
       state[i][0] = t;
@@ -187,4 +255,11 @@ void tasUpdate2() {
     xRec = shorten(xRec);
     yRec = shorten(yRec);
   }
+}
+
+boolean collisionBox(float x, float y, float xsize, float ysize, float x2, float y2) {
+  if (x+xsize/2 > x2 && x-xsize/2 < x2
+    && y+ysize/2 > y2 && y-ysize/2 < y2)
+  return true;
+  return false;
 }
