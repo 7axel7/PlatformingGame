@@ -2,13 +2,11 @@ class Player {
   color pcolor = color(100, 100, 255);
   float x;
   float y;
-  float spawnx;
-  float spawny;
   float dy;
   float speed = 4; //multiple of tile size
-  float jumpheight = 10.5;
+  float jumpheight = 9;
   float size = 18;
-  float gravity = 0.5;
+  float gravity = 0.425;
   int maxjumps = 2;
   int jumps = 0;
   float maxfallspeed = 8;
@@ -18,8 +16,6 @@ class Player {
   Player(float x, float y) {
     this.x = x;
     this.y = y;
-    spawnx = x;
-    spawny = y;
   }
 
   void effect(int type) {
@@ -27,8 +23,8 @@ class Player {
   }
 
   void death() {
-    x = spawnx;
-    y = spawny;
+    x = spawnX;
+    y = spawnY;
     jumps = maxjumps-1;
     dy = 0;
   }

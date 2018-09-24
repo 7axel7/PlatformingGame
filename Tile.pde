@@ -1,6 +1,6 @@
 ArrayList<Tile> tiles;
 
-float tileSize = 28;
+int tileSize = 28;
 class Tile {
   float x;
   float y;
