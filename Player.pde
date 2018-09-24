@@ -9,7 +9,7 @@ class Player {
   float gravity = 0.425;
   int maxjumps = 2;
   int jumps = 0;
-  float maxfallspeed = 8;
+  float maxfallspeed = 7;
   boolean grounded = false;
   boolean lastgrounded = false;
   boolean[] keys = new boolean[32];
@@ -38,6 +38,30 @@ class Player {
 
 
     rect((x-CX)*SM, (y-CY)*SM, size*SM, size*SM);
+
+    if (x+size > mapwidth*tileSize) {
+      rect((x-mapwidth*tileSize-CX)*SM, (y-CY)*SM, size*SM, size*SM);
+      if (y+size > mapheight*tileSize) {
+        rect((x-mapwidth*tileSize-CX)*SM, (y-mapheight*tileSize-CY)*SM, size*SM, size*SM);
+        rect((x-CX)*SM, (y-mapheight*tileSize-CY)*SM, size*SM, size*SM);
+      } else if (y-size < 0) {
+        rect((x-mapwidth*tileSize-CX)*SM, (y+mapheight*tileSize-CY)*SM, size*SM, size*SM);
+        rect((x-CX)*SM, (y+mapheight*tileSize-CY)*SM, size*SM, size*SM);
+      }
+    } else if (x-size < 0) {
+      rect((x+mapwidth*tileSize-CX)*SM, (y-CY)*SM, size*SM, size*SM);
+      if (y+size > mapheight*tileSize) {
+        rect((x+mapwidth*tileSize-CX)*SM, (y-mapheight*tileSize-CY)*SM, size*SM, size*SM);
+        rect((x-CX)*SM, (y-mapheight*tileSize-CY)*SM, size*SM, size*SM);
+      } else if (y-size < 0) {
+        rect((x+mapwidth*tileSize-CX)*SM, (y+mapheight*tileSize-CY)*SM, size*SM, size*SM);
+        rect((x-CX)*SM, (y+mapheight*tileSize-CY)*SM, size*SM, size*SM);
+      }
+    } else if (y+size > mapheight*tileSize) {
+      rect((x-CX)*SM, (y-mapheight*tileSize-CY)*SM, size*SM, size*SM);
+    } else if (y-size < 0) {
+      rect((x-CX)*SM, (y+mapheight*tileSize-CY)*SM, size*SM, size*SM);
+    }
   }
   void move() {
     float newx = x;
@@ -89,10 +113,10 @@ class Player {
     } else if (lastgrounded) jumps -=1;
     lastgrounded = grounded;
     this.y = newy;
-    if (x > mapwidth*20) x -= mapwidth*20;
-    else if (x < 0) x += mapwidth*20;
-    if (y > mapheight*20) y -= mapheight*20;
-    else if (y < 0) y += mapheight*20;
+    if (x > mapwidth*tileSize) x -= mapwidth*tileSize;
+    else if (x < 0) x += mapwidth*tileSize;
+    if (y > mapheight*tileSize) y -= mapheight*tileSize;
+    else if (y < 0) y += mapheight*tileSize;
   }
 }
 
