@@ -147,7 +147,7 @@ void edit() {
         rectMode(CENTER);
         if (tileTypeSelected[0] == i && tileTypeSelected[1] == j) {
           fill(color(tileTypes[i][j]*20, 0, 205));
-          rect(x, y, xsize+width/8, ysize+height/8);
+          rect(x, y, xsize+width/32, ysize+height/32);
         }
         fill(color(tileTypes[i][j]*20+50, 50, 255));
         rect(x, y, xsize, ysize);
