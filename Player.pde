@@ -8,7 +8,7 @@ class Player {
   float size = 18;
   float gravity = 0.425;
   int maxjumps = 2;
-  int jumps = 0;
+  int jumps = 1;
   float maxfallspeed = 7;
   boolean grounded = false;
   boolean lastgrounded = false;

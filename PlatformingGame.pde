@@ -15,13 +15,11 @@ int mapheight = 4;
 
 float spawnX = 1;
 float spawnY = 1;
-//                t,   x     ,y   ,dy,jumps
-float[][] state = {{0, -100, -100, 0, 0}, 
-  {0, -100, -100, 0, 0}, 
-  {0, -100, -100, 0, 0}};
 
-float[] xRec = {-100};
-float[] yRec = {-100};
+float[][] state;
+
+float[] xRec;
+float[] yRec;
 float cloneX;
 float cloneY;
 boolean recording = false;
@@ -62,23 +60,24 @@ void goToMap(int[] selected, String[][] filenames) {
   startGame();
   for (int i = 1; i < lines.length; i++) {
     String[] currFile = lines[i].split(",");
-    if (int(currFile[0]) == 1) {
-      createTile(int(currFile[1]), int(currFile[2]), 1);
-    }
-    if (int(currFile[2]) == 1) {
-      createTile(int(currFile[1]), mapheight+1, 1);
-    }
-    if (int(currFile[2]) ==  mapheight-1) {
-      createTile(int(currFile[1]), -1, 1);
-    }
-    if (int(currFile[1]) == mapwidth) {
-      createTile(0, int(currFile[2]), 1);
-      if (int(currFile[2]) == mapheight) {
-        createTile(int(currFile[1]), 0, 1);
-        createTile(0, 0, 1);
+    if (int(currFile[0]) >= 1 && int(currFile[0]) <= 2) {
+      createTile(int(currFile[1]), int(currFile[2]), int(currFile[0]));
+
+      if (int(currFile[2]) == 1 && int(currFile[0]) == 1) {
+        createTile(int(currFile[1]), mapheight+1, int(currFile[0]));
       }
-    } else if (int(currFile[2]) == mapheight) {
-      createTile(int(currFile[1]), 0, 1);
+      if (int(currFile[2]) ==  mapheight-1 && int(currFile[0]) == 1) {
+        createTile(int(currFile[1]), -1, int(currFile[0]));
+      }
+      if (int(currFile[1]) == mapwidth) {
+        createTile(0, int(currFile[2]), int(currFile[0]));
+        if (int(currFile[2]) == mapheight) {
+          createTile(int(currFile[1]), 0, int(currFile[0]));
+          createTile(0, 0, int(currFile[0]));
+        }
+      } else if (int(currFile[2]) == mapheight) {
+        createTile(int(currFile[1]), 0, int(currFile[0]));
+      }
     }
   }
 }
@@ -107,7 +106,24 @@ void chooseFileInit() {
   }
 }
 
+void editEnd() {
+  p = new Player(spawnX, spawnY);
+  t = 0;
+}
+
+void edit() {
+  stroke(0);
+  for (int i = 0; i < mapwidth; i++) {
+    line((i*tileSize-CX)*SM, -CY*SM, i*tileSize*SM, tileSize*mapheight*SM);
+  }
+  for (int i = 0; i < mapheight; i++) {
+    line(-CX*SM, (i*tileSize-CY)*SM, tileSize*mapwidth*SM, i*tileSize*SM);
+  }
+  noStroke();
+}
+
 void chooseFile() {
+  rectMode(CENTER);
   fill(100);
   rect(width/2, height/2, width*3/4, height*3/4);        
   for (int i = 0; i < filenames2.length; i++) {
@@ -142,9 +158,6 @@ void chooseFile() {
           goToMap(selected, filenames2);
         }
 
-
-
-
         if (collisionBox(x, y, xsize, ysize, mouseX, mouseY) && mouse) {
           if (selected[0] == i && selected[1] == j) {
             println(i, j);
@@ -163,27 +176,38 @@ void chooseFile() {
 }
 
 void startGame() {
-  SM = (float) min(width, height)/784*(1/float(min(mapwidth, mapheight)))*tileSize;
+  SM = (float) min(width, height)/784*(1/float(max(mapwidth, mapheight)))*tileSize;
   p = new Player(spawnX, spawnY);
   tiles = new ArrayList<Tile>();
   choosingFile = false;
   noStroke();
+  //                     t,   x,   y,  dy,jumps
+  state = new float[][]{{0, -100, -100, 0, 0}, 
+    {0, -100, -100, 0, 0}, 
+    {0, -100, -100, 0, 0}};
+
+  xRec = new float[]{-100};
+  yRec = new float[]{-100};
+  cloneX = -100;
+  cloneY = -100;
 }
 
 void draw() {
   t++;
   background(255);
-  if (tasMaster) tasUpdate();
-  if (t%gameSpeed == 0 && !pause || frameSkip) {
-    if (tasMaster) tasUpdate2();
-    frameSkip = false;
-    updateMovement();
-    if (gameSpeed != 1) {
-    }
-  }
-
-
   updateScreen();
+  if (p.keys[16]) {
+    p.keys[16] = false;
+    editing = !editing;
+    pause = false;
+    if (editing) {
+      choosingFile = false;
+      pause = true;
+    } else editEnd();
+  }
+  if (editing) {
+    edit();
+  }
   if (p.keys[4]) {
     p.keys[4] = false;
     choosingFile = !choosingFile;
@@ -194,6 +218,18 @@ void draw() {
   if (choosingFile) {
     chooseFile();
   }
+  if (tasMaster&& !editing) tasUpdate();
+  if (t%gameSpeed == 0 && !pause || frameSkip) {
+    if (tasMaster) tasUpdate2();
+    frameSkip = false;
+    updateMovement();
+    if (gameSpeed != 1) {
+    }
+  }
+
+
+
+
   //println(frameRate);
 }
 
@@ -201,7 +237,8 @@ void updateMovement() {
   p.move();
 }
 void updateScreen() {
-  p.display();
+  if (!editing)
+    p.display();
   for (int i = tiles.size()-1; i >= 0; i--) {
     Tile tile = tiles.get(i);
     tile.display();
@@ -219,8 +256,8 @@ void tasUpdate() {
   }
   for (int i = 0; i < 3; i++) {
     fill(80*i, 200, 70+255-80*i);
-    rect((state[i][1]-CX)*SM, (state[i][2]-CY)*SM, p.size/2*SM, p.size/2*SM);
     rectMode(CENTER);
+    rect((state[i][1]-CX)*SM, (state[i][2]-CY)*SM, p.size/2*SM, p.size/2*SM);
     if (p.keys[11+i]) {
       state[i][0] = t;
       state[i][1] = p.x; 
@@ -243,8 +280,8 @@ void tasUpdate() {
     p.keys[15] = false;
     gameSpeed -=1;
   }
-  if (p.keys[16] && gameSpeed < 20) {
-    p.keys[16] = false;
+  if (p.keys[14] && gameSpeed < 20) {
+    p.keys[14] = false;
 
     gameSpeed +=1;
   }

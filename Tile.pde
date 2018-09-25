@@ -13,10 +13,18 @@ class Tile {
   }
 
   void display() {
-    rectMode(CENTER);
+    float temp = 0;
+    if (!editing)
+      rectMode(CENTER);
+    else {
+      rectMode(CORNER);
+      temp = 1;
+    }
     if (type == 1)fill(100, 0, 100);
-    else if (type == 2){fill(255,0,0);}
-    rect((x-CX)*SM, (y-CY)*SM, size*SM, size*SM);
+    else if (type == 2) {
+      fill(255, 0, 0);
+    }
+    rect((x-CX-temp*tileSize)*SM, (y-CY-temp*tileSize)*SM, size*SM, size*SM);
   }
 }
 
