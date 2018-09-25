@@ -71,7 +71,7 @@ void goToMap(int[] selected, String[][] filenames) {
     startGame();
     for (int i = 1; i < lines.length; i++) {
         String[] currFile = lines[i].split(",");
-        placeBlock(int(currFile[1]),int(currFile[2]),int(currFile[0]));
+        placeBlock(int(currFile[1]), int(currFile[2]), int(currFile[0]));
     }
 }
 
@@ -106,11 +106,21 @@ void editEnd() {
 }
 
 void edit() {
-    if (mouse && !selectingTile) {
+    if (!selectingTile) { //Show placement
         int x = int(((mouseX-CX)/SM)/tileSize)+1;
         int y = int(((mouseY-CY)/SM)/tileSize)+1;
         int type = (tileTypeSelected[0])*4+tileTypeSelected[1]-1;
-        placeBlock(x,y,type);
+        fill(0, 0, 0, 0);
+        if (type == 1)fill(100, 0, 100, 150);
+        else if (type == 2) {
+            fill(255, 0, 0, 150);
+        }
+        rectMode(CORNER);
+        rect(((x-1)*tileSize-CX)*SM, ((y-1)*tileSize-CY)*SM, tileSize*SM, tileSize*SM);
+
+        if (mouse) { //Place tile
+            placeBlock(x, y, type);
+        }
     }
     if (p.keys[7]) {
         p.keys[7] = false;
