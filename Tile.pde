@@ -47,12 +47,12 @@ void placeBlock(int x, int y, int type) {
         createTile(x, y, type);
     }
 
-    if (y == 1 && type == 1) {
+    if (y == 1 && type < 2) {
         createTile(x, mapheight+1, type);
-    }
-    if (y ==  mapheight-1 && type == 1) {
-        createTile(x, -1, type);
-    }
+        if (x == mapwidth) {
+            createTile(0, mapheight+1, type);
+        }
+    } 
     if (x == mapwidth) {
         createTile(0, y, type);
         if (y == mapheight) {
@@ -61,5 +61,8 @@ void placeBlock(int x, int y, int type) {
         }
     } else if (y == mapheight) {
         createTile(x, 0, type);
+    }
+    if (y ==  mapheight-1 && type == 1) {
+        createTile(x, -1, type);
     }
 }
