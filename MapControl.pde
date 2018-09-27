@@ -5,10 +5,10 @@ int mapheight = 4;
 float spawnX = 1;
 float spawnY = 1;
 boolean choosingFile = false;
-int[] selectedfile = {0, 0};
-int[][] map;
 String[] filenames;
 String[][] filenames2;
+int[] selected = {0, 0};
+int[] currmap = {0,0};
 
 void chooseFile() {
     rectMode(CENTER);
@@ -57,19 +57,23 @@ void chooseFile() {
 
                 fill(0);
                 textAlign(CENTER);
-                text(filenames2[i][j], x, y);
+                String file = filenames2[i][j].substring(0, filenames2[i][j].length()-4);
+                text(file, x, y);
             }
         }
     }
 }
 
 void chooseFileInit() {
-    //println("Listing all filenames in a directory: ");
     String path = sketchPath()+ "/maps";
     filenames = listFileNames(path);
-    for (int i = 0; i < filenames.length; i ++) {
-        filenames[i] = filenames[i].substring(0, filenames[i].length()-4);
+    String[] filenames3 = {};
+    for (int i = 0; i < filenames.length; i++){
+        if (filenames[i].substring(filenames[i].length()-4).equals(".txt")){
+            filenames3 = append(filenames3, filenames[i]);
+        }
     }
+    filenames = filenames3;
     filenames2 = new String[int(filenames.length/5+1)][5];
     for (int i = 0; i < filenames.length; i ++) {
         filenames2[int(i/5)][i%5] = filenames[i];
@@ -88,8 +92,8 @@ String[] listFileNames(String dir) {
 }
 
 void goToMap(int[] selected, String[][] filenames) {
+    arrayCopy(selected,currmap);
     String fileName = filenames[selected[0]][selected[1]];
-    fileName += ".txt";
     String[] lines = loadStrings("maps/" + fileName);
     if (lines.length==0) return;
     String[] info = lines[0].split(",");
@@ -103,7 +107,17 @@ void goToMap(int[] selected, String[][] filenames) {
         placeBlock(int(currFile[1]), int(currFile[2]), int(currFile[0]));
     }
 }
+PrintWriter output;
 
-void saveMap(){
-
+void saveMap(String file) {
+    println(file);
+    output = createWriter(file); 
+    output.println(str(mapwidth)+","+str(mapheight)+","+str(int(spawnX/tileSize))+","+str(int(spawnY/tileSize)));
+    for (int i = tiles.size()-1; i >= 0; i--) {
+        Tile tile = tiles.get(i);
+        if (tile.x >= 0 && tile.x <= mapwidth*tileSize && tile.y >= 0 && tile.y <= mapheight*tileSize)
+            output.println(str(tile.type)+","+str(int(tile.x/tileSize))+","+str(int(tile.y/tileSize)));
+    }
+    output.flush();
+    output.close();
 }

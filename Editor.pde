@@ -5,7 +5,6 @@ int[][] tileTypes = {{0, 1, 2, 3}, {5, 6, 7, 8}, {11, 12, 13, -1}};
 int[] tileTypeSelected = {0, 0};
 boolean selectingTile = false;
 boolean editing = false;
-int[] selected = {0, 0};
 
 
 void editEnd() {
@@ -15,7 +14,7 @@ void editEnd() {
 }
 
 void edit() {
-    if (!selectingTile) { //Show placement
+    if (!selectingTile && !choosingFile) { //Show placement
         int x = int(((mouseX)/SM+CX)/tileSize)+1;
         int y = int(((mouseY)/SM+CY)/tileSize)+1;
         int type = (tileTypeSelected[0])*4+tileTypeSelected[1]-1;
@@ -56,7 +55,33 @@ void edit() {
 void selectTile() {
     rectMode(CENTER);
     fill(100);
-    rect(width/2, height/2, width*3/4, height*3/4);        
+    rect(width/2, height/2, width*3/4, height*3/4); // Backround Box
+
+    fill(200);
+    rect(width/3, height*1/16, width/8, height/16); // Save Box
+    fill(0);
+    textAlign(CENTER);
+    text("Save", width/3, height*1/16);
+    if (collisionBox(width/3, height*1/16, width/8, height/16, mouseX, mouseY) && mouse) {
+        selectingTile = false;
+        mouse = false;
+        saveMap("maps/"+filenames2[currmap[0]][currmap[1]]);
+    }
+    
+    fill(200);
+    rect(width*2/3, height*1/16, width/8, height/16); // Save As Box
+    fill(0);
+    text("Save As:" + text, width*2/3, height*1/16);
+    if (collisionBox(width*2/3, height*1/16, width/8, height/16, mouseX, mouseY) && mouse || typing == 2) {
+        if (typing == 0) typing = 1;
+        else {
+            typing = 0;
+            selectingTile = false;
+            saveMap("maps/"+text+".txt");
+        }
+        mouse = false;
+    }
+
     for (int i = 0; i < tileTypes.length; i++) {
         for (int j = 0; j < tileTypes[0].length; j++) {
             if (tileTypes[i][j]!=-1) {

@@ -4,12 +4,12 @@ class Player {
   float y;
   float dy;
   float speed = 4; //multiple of tile size
-  float jumpheight = 9;
+  float jumpheight = 7.5;
   float size = 18;
-  float gravity = 0.425;
+  float gravity = 0.37;//0.425;
   int maxjumps = 2;
   int jumps = 1;
-  float maxfallspeed = 7;
+  float maxfallspeed = 8;
   boolean grounded = false;
   boolean lastgrounded = false;
   boolean[] keys = new boolean[32];
