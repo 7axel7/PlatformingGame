@@ -67,17 +67,46 @@ void selectTile() {
         mouse = false;
         saveMap("maps/"+filenames2[currmap[0]][currmap[1]]);
     }
-    
+
     fill(200);
     rect(width*2/3, height*1/16, width/8, height/16); // Save As Box
     fill(0);
-    text("Save As:" + text, width*2/3, height*1/16);
+    text("Save As:", width*2/3, height*1/16);
+    if (typing != 0) {
+        fill(100);
+        rect(width*5/6, height*1/16, width/8+2, height/16+2); // Save As Box 2
+        fill(200);
+        rect(width*5/6+30, height*1/16, width/8, height/16); // Save As Box 3
+        text(text, width*5/6, height*1/16);
+    }
     if (collisionBox(width*2/3, height*1/16, width/8, height/16, mouseX, mouseY) && mouse || typing == 2) {
         if (typing == 0) typing = 1;
         else {
             typing = 0;
             selectingTile = false;
+            if (text.equals("")) {
+                text = "untitled";
+            }
+            boolean temp = false;
+            int copy = 0;
+            while (temp == false) {
+                temp = true;
+                for (int i = 0; i < filenames2.length; i++) {
+                    for (int j = 0; j < filenames2[0].length; j++) {
+                        println(filenames2[i][j]);
+                        if ((text+str(copy)+".txt").equals(filenames2[i][j])||(copy == 0 && (text+".txt").equals(filenames2[i][j]))) {
+                            temp = false;
+                            copy++;
+                        }
+                    }
+                }
+            }
+            if (copy >= 1)
+                text += str(copy);
+
             saveMap("maps/"+text+".txt");
+            text = "";
+            chooseFileInit();
         }
         mouse = false;
     }
