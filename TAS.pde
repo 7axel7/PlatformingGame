@@ -23,6 +23,7 @@ void tasUpdate() {
     for (int i = 0; i < 3; i++) {
         fill(80*i, 200, 70+255-80*i);
         rectMode(CENTER);
+        if(!selectingTile && !choosingFile)
         rect((state[i][1]-CX)*SM, (state[i][2]-CY)*SM, p.size/2*SM, p.size/2*SM);
         if (p.keys[11+i]) {
             state[i][0] = t;
