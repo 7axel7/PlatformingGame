@@ -110,7 +110,7 @@ void goToMap(int[] selected, String[][] filenames) {
 PrintWriter output;
 
 void saveMap(String file) {
-    println(file);
+    //println(file);
     output = createWriter(file); 
     output.println(str(mapwidth)+","+str(mapheight)+","+str(int(spawnX/tileSize))+","+str(int(spawnY/tileSize)));
     for (int i = tiles.size()-1; i >= 0; i--) {

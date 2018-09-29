@@ -1,21 +1,22 @@
-String[][] keyList = new String[][]{{"87", "38"}, {"83", "40"}, {"65", "37"}, {"68", "39"}, {"9"}, {"80"}, {"32"}, {"16"}, {"49"}, {"50"}, {"51"}, {"52"}, {"53"}, {"54"}, {"109", "189"}, {"107", "187"}, {"69"}};
+String[][] keyList = new String[][]{{"87", "38"}, {"83", "40"}, {"65", "37"}, {"68", "39"}, {"9"}, {"80"}, {"32"}, {"16"}, {"49"}, {"50"}, {"51"}, {"52"}, {"53"}, {"54"}, {"109", "189"}, {"107", "187"}, {"69"}, {"81"}};
 int typing = 0;
-String text = "";
+String[] text = {"",""};
 
 void keyPressed() {
     if (typing == 0)
         keyHandler(str(keyCode), true);
     else {
+        int box = int((float) (typing+1)/3);
         if (keyCode == BACKSPACE) {
-            if (text.length() > 0) {
-                text = text.substring(0, text.length()-1);
+            if (text[box].length() > 0) {
+                text[box] = text[box].substring(0, text[box].length()-1);
             }
         } else if (keyCode == DELETE) {
-            text = "";
+            text[box] = "";
         } else if (keyCode == ENTER) {
             typing = 2;
-        } else if (key != '.'&&keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT && text.length() <= 10) {
-            text = text + key;
+        } else if (key != '.'&&keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT && text[box].length() <= 10) {
+            text[box] = text[box] + key;
         }
     }
 }
