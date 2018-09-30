@@ -7,6 +7,7 @@ boolean selectingTile = false;
 boolean editing = false;
 boolean changingSettings = false;
 int[] oldSettings = {0, 0};
+int textSize;
 
 
 void editEnd() {
@@ -34,7 +35,7 @@ void edit() {
     int y = int(((mouseY)/SM+CY)/tileSize)+1;
     int type = (tileTypeSelected[0])*4+tileTypeSelected[1]-1;
     fill(0, 0, 0, 0);
-    if (type == 1)fill(100, 0, 100, 150);
+    if (type == 1)fill(0, 0, 0, 150);
     else if (type == 2) {
       fill(255, 0, 0, 150);
     }
@@ -83,6 +84,7 @@ void selectTile() {
   rect(width/3, height*1/16, width/8, height/16); // Save Box
   fill(0);
   textAlign(CENTER);
+  textSize(textSize);
   text("Save", width/3, height*1/16);
   if (collisionBox(width/3, height*1/16, width/8, height/16, mouseX, mouseY) && mouse) {
     selectingTile = false;
@@ -93,6 +95,7 @@ void selectTile() {
   fill(200);
   rect(width*2/3, height*1/16, width/8, height/16); // Save As Box
   fill(0);
+  textSize(textSize);
   text("Save As:", width*2/3, height*1/16);
   if (typing != 0) {
     fill(100);
@@ -100,6 +103,7 @@ void selectTile() {
     fill(200);
     rect(width*5/6, height*1/16, width/8, height/16); // Save As Box 3
     fill(0);
+    textSize(textSize);
     text(text[0], width*5/6, height*1/16);
   }
   if (collisionBox(width*2/3, height*1/16, width/8, height/16, mouseX, mouseY) && mouse || typing == 2) {
@@ -201,6 +205,7 @@ void changingSettings() {
   rect(width/3, height*3/16, width/8, height/16); // width Box
   fill(0);
   textAlign(CENTER);
+  textSize(textSize);
   text("Width", width/3, height*3/16);
   if (collisionBox(width/3, height*3/16, width/8, height/16, mouseX, mouseY) && mouse) {
     if (typing == 0) {
@@ -215,6 +220,7 @@ void changingSettings() {
     fill(200);
     rect(width*8/16, height*3/16, width/8, height/16); // width Box 3
     fill(0);
+    textSize(textSize);
     text(text[1], width*8/16, height*3/16);
   } else if (typing == 4) {
     mapwidth = int(text[1]);
@@ -226,6 +232,7 @@ void changingSettings() {
   rect(width/3, height*5/16, width/8, height/16); // height Box
   fill(0);
   textAlign(CENTER);
+  textSize(textSize);
   text("Height", width/3, height*5/16);
   if (collisionBox(width/3, height*5/16, width/8, height/16, mouseX, mouseY) && mouse) {
     if (typing == 0) {
@@ -240,6 +247,7 @@ void changingSettings() {
     fill(200);
     rect(width*8/16, height*5/16, width/8, height/16); // height Box 3
     fill(0);
+    textSize(textSize);
     text(text[2], width*8/16, height*5/16);
   } else if (typing == 6) {
     mapheight = int(text[2]);

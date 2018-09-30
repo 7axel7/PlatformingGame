@@ -20,11 +20,11 @@ class Tile {
             rectMode(CORNER);
             temp = 1;
         }
-        if (type == 1)fill(100, 0, 100);
+        if (type == 1)fill(0, 0, 0);
         else if (type == 2) {
             fill(255, 0, 0);
         }
-        rect((x-CX-temp*tileSize)*SM, (y-CY-temp*tileSize)*SM, size*SM, size*SM);
+        rect((x-CX-temp*tileSize)*SM, (y-CY-temp*tileSize)*SM, ceil(size*SM), ceil(size*SM));
     }
 }
 

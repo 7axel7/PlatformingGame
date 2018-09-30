@@ -21,12 +21,13 @@ void setup() {
     }
   }
   surface.setResizable(true);
-  size(700, 700);
+  size(2000, 2000);
   startGame();
 }
 
 void startGame() {
   SM = (float) min(width, height)/784*(1/float(max(mapwidth, mapheight)))*tileSize;
+  textSize = int(0.01*min(width, height));
   p = new Player(spawnX, spawnY);
   tiles = new ArrayList<Tile>();
   choosingFile = false;
@@ -43,6 +44,7 @@ void startGame() {
 }
 
 void draw() {
+  //println(frameRate);
   t++;
   background(255);
   updateScreen();

@@ -58,6 +58,7 @@ void chooseFile() {
                 fill(0);
                 textAlign(CENTER);
                 String file = filenames2[i][j].substring(0, filenames2[i][j].length()-4);
+                textSize(textSize);
                 text(file, x, y);
             }
         }
