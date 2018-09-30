@@ -4,9 +4,9 @@ class Player {
   float y;
   float dy;
   float speed = 4; //multiple of tile size
-  float jumpheight = 8; //10.5
+  float jumpheight = 8.1;
   float size = 20;
-  float gravity = 0.43; //0.7
+  float gravity = 0.435;
   int maxjumps = 2;
   int jumps = 1;
   float maxfallspeed = 8;

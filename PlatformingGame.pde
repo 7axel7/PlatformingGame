@@ -48,14 +48,17 @@ void draw() {
   updateScreen();
   if (p.keys[16]) {
     choosingFile = false;
-    changingSettings = false;
+    if (changingSettings) {
+        changingSettingsEnd();
+        changingSettings = false;
+      }
 
     p.keys[16] = false;
     editing = !editing;
     pause = false;
     if (editing) {
       pause = true;
-    } else editEnd();
+      } else editEnd();
   }
   if (editing) {
     edit();

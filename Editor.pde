@@ -6,6 +6,7 @@ int[] tileTypeSelected = {0, 0};
 boolean selectingTile = false;
 boolean editing = false;
 boolean changingSettings = false;
+int[] oldSettings = {0, 0};
 
 
 void editEnd() {
@@ -20,7 +21,10 @@ void edit() {
     selectingTile = !selectingTile;
     if (selectingTile) {
       choosingFile = false;
-      changingSettings = false;
+      if (changingSettings) {
+        changingSettingsEnd();
+        changingSettings = false;
+      }
     }
   }
 
@@ -45,8 +49,11 @@ void edit() {
     p.keys[7] = false;
     changingSettings = !changingSettings;
     if (changingSettings) {
+      changingSettingsInit();
       choosingFile = false;
       selectingTile = false;
+    } else {
+      changingSettingsEnd();
     }
   }
   stroke(0);
@@ -164,31 +171,79 @@ void selectTile() {
   }
 }
 
+void changingSettingsInit() {
+  oldSettings[0] = mapwidth;
+  oldSettings[1] = mapheight;
+}
+
+void changingSettingsEnd() {
+  if (oldSettings[0] != mapwidth || oldSettings[1] != mapheight) {//remove blockers
+    for (int i = tiles.size()-1; i >= 0; i--) {
+      Tile tile = tiles.get(i);
+      if (tile.x <= 0 || tile.x > mapwidth*tileSize || tile.y <= 0 || tile.y > mapheight*tileSize) {
+        tiles.remove(i);
+      }
+    }
+    for (int i = tiles.size()-1; i >= 0; i--) { //add blockers
+      Tile tile = tiles.get(i);
+      placeBlock(int(tile.x/tileSize), int(tile.y/tileSize), tile.type);
+    }
+  }
+}
+
 void changingSettings() {
   rectMode(CENTER);
   fill(100);
   rect(width/2, height/2, width*3/4, height*3/4); // Backround Box
 
+
   fill(200);
-  rect(width/3, height*3/16, width/8, height/16); // Save Box
+  rect(width/3, height*3/16, width/8, height/16); // width Box
   fill(0);
   textAlign(CENTER);
   text("Width", width/3, height*3/16);
   if (collisionBox(width/3, height*3/16, width/8, height/16, mouseX, mouseY) && mouse) {
-    mouse = false;
-    typing = 3;
+    if (typing == 0) {
+      mouse = false;
+      typing = 3;
+      text[1] = "";
+    }
   }
   if (typing == 3) {
     fill(100);
-    rect(width*8/16, height*3/16, width/8+2, height/16+2); // Save As Box 2
+    rect(width*8/16, height*3/16, width/8+2, height/16+2); // width Box 2
     fill(200);
-    rect(width*8/16, height*3/16, width/8, height/16); // Save As Box 3
+    rect(width*8/16, height*3/16, width/8, height/16); // width Box 3
     fill(0);
     text(text[1], width*8/16, height*3/16);
-    println(text[1]);
   } else if (typing == 4) {
-    fill(255, 0, 0, 150);
     mapwidth = int(text[1]);
+    SM = (float) min(width, height)/784*(1/float(max(mapwidth, mapheight)))*tileSize;
+    typing = 0;
+  }
+
+  fill(200);
+  rect(width/3, height*5/16, width/8, height/16); // height Box
+  fill(0);
+  textAlign(CENTER);
+  text("Height", width/3, height*5/16);
+  if (collisionBox(width/3, height*5/16, width/8, height/16, mouseX, mouseY) && mouse) {
+    if (typing == 0) {
+      mouse = false;
+      typing = 5;
+      text[2] = "";
+    }
+  }
+  if (typing == 5) {
+    fill(100);
+    rect(width*8/16, height*5/16, width/8+2, height/16+2); // height Box 2
+    fill(200);
+    rect(width*8/16, height*5/16, width/8, height/16); // height Box 3
+    fill(0);
+    text(text[2], width*8/16, height*5/16);
+  } else if (typing == 6) {
+    mapheight = int(text[2]);
+    SM = (float) min(width, height)/784*(1/float(max(mapwidth, mapheight)))*tileSize;
     typing = 0;
   }
 }

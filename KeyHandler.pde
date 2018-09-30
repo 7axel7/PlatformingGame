@@ -1,6 +1,6 @@
 String[][] keyList = new String[][]{{"87", "38"}, {"83", "40"}, {"65", "37"}, {"68", "39"}, {"9"}, {"80"}, {"32"}, {"16"}, {"49"}, {"50"}, {"51"}, {"52"}, {"53"}, {"54"}, {"109", "189"}, {"107", "187"}, {"69"}, {"81"}};
 int typing = 0;
-String[] text = {"", ""};
+String[] text = {"", "", ""};
 
 void keyPressed() {
   if (typing == 0)
@@ -12,12 +12,12 @@ void keyPressed() {
         text[box] = text[box].substring(0, text[box].length()-1);
       }
     } else if (keyCode == DELETE) {
-      if (box > 0 && box < 3) {
-        if (key == '1'||key == '2' ||key == '3' ||key == '4' ||key == '5' ||key == '6' ||key == '7' ||key == '8' ||key == '9' || key == '0') 
-          text[box] = text[box] + key;
-      } else
+      text[box] = "";
+    } else if (box > 0 && box < 3) {
+      if (key == '1'||key == '2' ||key == '3' ||key == '4' ||key == '5' ||key == '6' ||key == '7' ||key == '8' ||key == '9' || key == '0') 
         text[box] = text[box] + key;
-    } 
+    } else if (key != '.' && keyCode != SHIFT && str(keyCode) != "20" && keyCode != ENTER)
+      text[box] = text[box] + key;
     if (keyCode == ENTER) {
       typing += 1;
     }

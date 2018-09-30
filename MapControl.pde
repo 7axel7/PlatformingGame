@@ -23,7 +23,7 @@ void chooseFile() {
                 }
 
                 float x = width*1/4+width*1/8*j;
-                float y = height*1/4+width*1/8*i;
+                float y = height*1/4+height*1/8*i;
                 float xsize = width*1/12;
                 float ysize = height*1/12;
                 rectMode(CENTER);
