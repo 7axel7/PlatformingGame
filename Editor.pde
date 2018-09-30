@@ -170,12 +170,25 @@ void changingSettings() {
   rect(width/2, height/2, width*3/4, height*3/4); // Backround Box
 
   fill(200);
-  rect(width/3, height*3/8, width/8, height/16); // Save Box
+  rect(width/3, height*3/16, width/8, height/16); // Save Box
   fill(0);
   textAlign(CENTER);
   text("Width", width/3, height*3/16);
   if (collisionBox(width/3, height*3/16, width/8, height/16, mouseX, mouseY) && mouse) {
     mouse = false;
-    typing = 4;
+    typing = 3;
+  }
+  if (typing == 3) {
+    fill(100);
+    rect(width*8/16, height*3/16, width/8+2, height/16+2); // Save As Box 2
+    fill(200);
+    rect(width*8/16, height*3/16, width/8, height/16); // Save As Box 3
+    fill(0);
+    text(text[1], width*8/16, height*3/16);
+    println(text[1]);
+  } else if (typing == 4) {
+    fill(255, 0, 0, 150);
+    mapwidth = int(text[1]);
+    typing = 0;
   }
 }
