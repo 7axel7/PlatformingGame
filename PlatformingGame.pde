@@ -21,7 +21,7 @@ void setup() {
     }
   }
   surface.setResizable(true);
-  size(2000, 2000);
+  size(700, 700);
   startGame();
 }
 
