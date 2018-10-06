@@ -76,7 +76,7 @@ class Player {
       effect(tiletouch);
       newx = x;
     }
-    if (tiletouch == 0) {
+    if (tiletouch != 1) {
       this.x = newx;
     }
 
@@ -97,7 +97,8 @@ class Player {
     if (tiletouch > 1) { 
       effect(tiletouch);
       newy = y;
-    } else if (tiletouch == 1) {// collides with wall
+    } 
+    if (tiletouch == 1) {// collides with wall
       if (dy > 0) grounded = true;
       float safey = y;
       for (int i = 0; i < sqrt(abs(dy))+1; i++) {
@@ -124,9 +125,9 @@ int collision(float x, float y, float size) {
   int type = 0;
   for (int i = tiles.size()-1; i >=0; i--) {
     Tile tile = tiles.get(i);
-    if (tile.x+tile.size/2 > x-size/2 && tile.x-tile.size/2 < x+size/2
-      && tile.y+tile.size/2 > y-size/2 && tile.y-tile.size/2 < y+size/2)
-      if (type < tile.type)
+    if (tile.drawx+tile.xsize/2 > x-size/2 && tile.drawx-tile.xsize/2 < x+size/2
+      && tile.drawy+tile.ysize/2 > y-size/2 && tile.drawy-tile.ysize/2 < y+size/2)
+      if (type < tile.type && tile.type != 3&& tile.type != 4&& tile.type != 5)
         type = tile.type;
   }
   return type;

@@ -51,16 +51,16 @@ void draw() {
   if (p.keys[16]) {
     choosingFile = false;
     if (changingSettings) {
-        changingSettingsEnd();
-        changingSettings = false;
-      }
+      changingSettingsEnd();
+      changingSettings = false;
+    }
 
     p.keys[16] = false;
     editing = !editing;
     pause = false;
     if (editing) {
       pause = true;
-      } else editEnd();
+    } else editEnd();
   }
   if (editing) {
     edit();
@@ -94,6 +94,7 @@ void updateScreen() {
     p.display();
   for (int i = tiles.size()-1; i >= 0; i--) {
     Tile tile = tiles.get(i);
+    tile.detect();
     tile.display();
   }
 }

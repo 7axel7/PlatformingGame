@@ -1,13 +1,14 @@
 
 //EDITOR VARIABLES
 int numTileTypes = 0;
-int[][] tileTypes = {{0, 1, 2, 3}, {5, 6, 7, 8}, {11, 12, 13, -1}};
+int[][] tileTypes = {{0, 1, 2, 3}, {4, 5, 6, 7}, {-1, -1, -1, -1}};
 int[] tileTypeSelected = {0, 0};
 boolean selectingTile = false;
 boolean editing = false;
 boolean changingSettings = false;
 int[] oldSettings = {0, 0};
 int textSize;
+int cursorRotation = 0;
 
 
 void editEnd() {
@@ -28,12 +29,17 @@ void edit() {
       }
     }
   }
-
+  
+  if (p.keys[18]){
+    p.keys[18] = false;
+    cursorRotation += 1;
+    if (cursorRotation == 4) cursorRotation = 0;
+  }
 
   if (!selectingTile && !choosingFile) { //Show placement
     int x = int(((mouseX)/SM+CX)/tileSize)+1;
     int y = int(((mouseY)/SM+CY)/tileSize)+1;
-    int type = (tileTypeSelected[0])*4+tileTypeSelected[1]-1;
+    int type = tileTypes[tileTypeSelected[0]][tileTypeSelected[1]];
     fill(0, 0, 0, 0);
     if (type == 1)fill(0, 0, 0, 150);
     else if (type == 2) {
@@ -43,7 +49,7 @@ void edit() {
     rect(((x-1)*tileSize-CX)*SM, ((y-1)*tileSize-CY)*SM, tileSize*SM, tileSize*SM);
 
     if (mouse) { //Place tile
-      placeBlock(x, y, type);
+      placeBlock(x, y, type, true, cursorRotation);
     }
   }
   if (p.keys[7]) {
