@@ -83,15 +83,18 @@ class Player {
     float newy = y;
 
     if (keys[0] && jumps > 0&& !choosingFile) {
-      if (grounded!= true) jumps -=1;
+      if (grounded != true) jumps -=1;
       keys[0] = false;
-      dy=-jumpheight;
+      if (gravity > 0)
+        dy=-jumpheight;
+      else dy=+jumpheight;
     }
     dy += gravity;
 
 
     grounded = false;
     if (dy > maxfallspeed) dy = maxfallspeed;
+    if (dy < -maxfallspeed) dy = -maxfallspeed;
     newy += dy;
     tiletouch = collision(x, newy, size);
     if (tiletouch > 1) { 
@@ -99,7 +102,7 @@ class Player {
       newy = y;
     } 
     if (tiletouch == 1) {// collides with wall
-      if (dy > 0) grounded = true;
+      if (dy > 0 && gravity > 0 || dy < 0 && gravity < 0) grounded = true;
       float safey = y;
       for (int i = 0; i < sqrt(abs(dy))+1; i++) {
         if (collision(x, (safey+newy)/2, size) == 1) {
@@ -127,7 +130,7 @@ int collision(float x, float y, float size) {
     Tile tile = tiles.get(i);
     if (tile.drawx+tile.xsize/2 > x-size/2 && tile.drawx-tile.xsize/2 < x+size/2
       && tile.drawy+tile.ysize/2 > y-size/2 && tile.drawy-tile.ysize/2 < y+size/2)
-      if (type < tile.type && tile.type != 3&& tile.type != 4&& tile.type != 5)
+      if (type < tile.type && tile.type != 3 && tile.type != 4 && tile.type != 5 && tile.type != 6 && tile.type != 7)
         type = tile.type;
   }
   return type;

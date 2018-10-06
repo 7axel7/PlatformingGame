@@ -12,6 +12,8 @@ int cursorRotation = 0;
 
 
 void editEnd() {
+  cursorRotation = 0;
+
   p = new Player(spawnX, spawnY);
   t = 0;
   selectingTile = false;
@@ -29,11 +31,11 @@ void edit() {
       }
     }
   }
-  
-  if (p.keys[18]){
+
+  if (p.keys[18]) {
     p.keys[18] = false;
-    cursorRotation += 1;
-    if (cursorRotation == 4) cursorRotation = 0;
+    cursorRotation -= 1;
+    if (cursorRotation == -1) cursorRotation = 3;
   }
 
   if (!selectingTile && !choosingFile) { //Show placement

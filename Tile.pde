@@ -20,22 +20,22 @@ class Tile {
     this.rotation = rotation;
     this.drawx = x;
     this.drawy = y;
-    if (type == 3) {
+    if (type == 3 || type == 6 || type == 7) {
       if (rotation == 0) {
         drawy = (y+tileSize*2/5);
         ysize = ceil(tileSize*1/5+1);
       }
       if (rotation == 1) {
         drawx = (x+tileSize*2/5);
-        xsize = ceil(tileSize*1/5);
+        xsize = ceil(tileSize*1/5+1);
       }
       if (rotation == 2) {
         drawy = (y-tileSize*2/5);
-        ysize = ceil(tileSize*1/5);
+        ysize = ceil(tileSize*1/5+1);
       }
       if (rotation == 3) {
         drawx = (x-tileSize*2/5);
-        xsize = ceil(tileSize*1/5);
+        xsize = ceil(tileSize*1/5+1);
       }
     } else if (type == 4 || type == 5) {
       xsize = ceil(tileSize/2);
@@ -55,6 +55,10 @@ class Tile {
       fill(255, 0, 0);
     } else if (type == 3) {
       fill(100, 255, 100);
+    } else if (type == 6) {
+      fill(255, 150, 100);
+    } else if (type == 7) {
+      fill(100, 150, 255);
     }
     if (type == 4) {
       if (active) fill(0, 0, 0);
@@ -67,27 +71,78 @@ class Tile {
     if (type == 4 || type == 5) {
       if (active == pressed) {
         if (active && type == 4 || !active && type == 5) {
-          placeBlock(int(x/tileSize), int(y/tileSize), 2 ,false);
+          placeBlock(int(x/tileSize), int(y/tileSize), 2, false);
         } else {
-          placeBlock(int(x/tileSize), int(y/tileSize), 1 ,false);
+          placeBlock(int(x/tileSize), int(y/tileSize), 1, false);
         }
         if (active) pressed = false;
         else pressed = true;
+      }
+    }
+    if (type == 3 || type == 6 || type == 7) {
+      if (int(x/tileSize) == mapwidth) {
+        rect((drawx-CX-temp*tileSize-mapwidth*tileSize)*SM, (drawy-CY-temp*tileSize)*SM, xsize*SM, ysize*SM);
+        if (int(y/tileSize) == mapheight) {
+          rect((drawx-CX-temp*tileSize)*SM, (drawy-CY-temp*tileSize-mapheight*tileSize)*SM, xsize*SM, ysize*SM);
+          rect((drawx-CX-temp*tileSize-mapwidth*tileSize)*SM, (drawy-CY-temp*tileSize-mapheight*tileSize)*SM, xsize*SM, ysize*SM);
+        }
+      } else if (int(y/tileSize) == mapheight) {
+        rect((drawx-CX-temp*tileSize)*SM, (drawy-CY-temp*tileSize-mapheight*tileSize)*SM, xsize*SM, ysize*SM);
       }
     }
     rect((drawx-CX-temp*tileSize)*SM, (drawy-CY-temp*tileSize)*SM, xsize*SM, ysize*SM);
   }
 
   void detect() {
-    if (type==3) {
+    if (type==3 || type == 6 || type == 7) {
+      boolean temp = false;
       if (drawx+xsize/2 > p.x-p.size/2 && drawx-xsize/2 < p.x+p.size/2
         && drawy+ysize/2 > p.y-p.size/2 && drawy-ysize/2 < p.y+p.size/2) {
-        if (pressed == false) {
-          pressed = true;
-          active = !active;
+        temp = true;
+      }
+      if (int(x/tileSize) == mapwidth) {
+        if (drawx-mapwidth*tileSize+xsize/2 > p.x-p.size/2 && drawx-mapwidth*tileSize-xsize/2 < p.x+p.size/2
+          && drawy+ysize/2 > p.y-p.size/2 && drawy-ysize/2 < p.y+p.size/2) {
+          temp = true;
         }
-      } else if (pressed == true) {
-        pressed = false;
+        if (int(y/tileSize) == mapheight) {
+          if (drawx+xsize/2 > p.x-p.size/2 && drawx-xsize/2 < p.x+p.size/2
+            && drawy-mapheight*tileSize+ysize/2 > p.y-p.size/2 && drawy-mapheight*tileSize-ysize/2 < p.y+p.size/2) {
+            temp = true;
+          }            
+          if (drawx-mapwidth*tileSize+xsize/2 > p.x-p.size/2 && drawx-mapwidth*tileSize-xsize/2 < p.x+p.size/2
+            && drawy-mapheight*tileSize+ysize/2 > p.y-p.size/2 && drawy-mapheight*tileSize-ysize/2 < p.y+p.size/2) {
+            temp = true;
+          }
+        }
+      } else if (int(y/tileSize) == mapheight) {
+        if (drawx+xsize/2 > p.x-p.size/2 && drawx-xsize/2 < p.x+p.size/2
+          && drawy-mapheight*tileSize+ysize/2 > p.y-p.size/2 && drawy-mapheight*tileSize-ysize/2 < p.y+p.size/2) {
+          temp = true;
+        }
+      }
+      if (type == 3) {
+        if (temp) {
+          if (pressed == false) {
+            pressed = true;
+            active = !active;
+          }
+        } else {
+          pressed = false;
+        }
+      }
+      else if (type == 6) {
+        if (temp) {
+          if (p.gravity >= 0) {
+            p.gravity = -abs(p.gravity);
+          }
+        }
+      } else if (type == 7) {
+        if (temp) {
+          if (p.gravity <= 0) {
+            p.gravity = abs(p.gravity);
+          }
+        }
       }
     }
   }
@@ -95,12 +150,12 @@ class Tile {
 
 
 
-void createTile(int x, int y, int type, boolean deleting,int rotation) {
+void createTile(int x, int y, int type, boolean deleting, int rotation) {
   if (-1 <= type && type <= 10) {
     for (int i = tiles.size()-1; i >= 0; i--) {
       if (int(tiles.get(i).x/tileSize)==x&&int(tiles.get(i).y/tileSize)==y) {
         if (!(!deleting && (tiles.get(i).type == 4 || tiles.get(i).type == 5)))
-        tiles.remove(i);
+          tiles.remove(i);
       }
     }
   }
@@ -111,36 +166,39 @@ void createTile(int x, int y, int type, boolean deleting,int rotation) {
 }
 
 void placeBlock(int x, int y, int type) {
-  placeBlock(x,y,type,true,0);
+  placeBlock(x, y, type, true, 0);
 }
 void placeBlock(int x, int y, int type, boolean deleting) {
-  placeBlock(x,y,type,deleting,0);
+  placeBlock(x, y, type, deleting, 0);
 }
 
 void placeBlock(int x, int y, int type, boolean deleting, int rotation) {
   if (x > 0 && x < mapwidth+1 && y > 0 && y < mapheight+1) {
-    createTile(x, y, type,deleting,rotation);
+    createTile(x, y, type, deleting, rotation);
   }
   if (type < 10) {
+    if (type == 3 || type == 6 || type == 7) {
+      type = -1;
+    }
     if (y == 1) {
-      createTile(x, mapheight+1, type,deleting,rotation);
+      createTile(x, mapheight+1, type, deleting, rotation);
       if (x == mapwidth) {
-        createTile(0, mapheight+1, type,deleting,rotation);
+        createTile(0, mapheight+1, type, deleting, rotation);
       }
     } 
     if (x == mapwidth) {
-      createTile(0, y, type,deleting,rotation);
+      createTile(0, y, type, deleting, rotation);
       if (y == mapheight) {
-        createTile(x, 0, type,deleting,rotation);
-        createTile(0, 0, type,deleting,rotation);
+        createTile(x, 0, type, deleting, rotation);
+        createTile(0, 0, type, deleting, rotation);
       }
     } else if (y == mapheight) {
-      createTile(x, 0, type,deleting,rotation);
+      createTile(x, 0, type, deleting, rotation);
     }
     if (y ==  mapheight-1) {
-      createTile(x, -1, type,deleting,rotation);
+      createTile(x, -1, type, deleting, rotation);
       if (x == mapwidth) {
-        createTile(0, -1, type,deleting,rotation);
+        createTile(0, -1, type, deleting, rotation);
       }
     }
   }
