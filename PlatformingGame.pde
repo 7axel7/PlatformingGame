@@ -97,6 +97,13 @@ void updateScreen() {
     tile.detect();
     tile.display();
   }
+  if (spawnPlaced > 0) {
+    spawnPlaced -=1;
+    if (editing) {
+      ellipse((spawnX-CX*tileSize-0.5*tileSize)*SM, (spawnY-CY*tileSize-0.5*tileSize)*SM, tileSize/2*SM, tileSize/2*SM);
+    } else
+      ellipse((spawnX-CX*tileSize*tileSize)*SM, (spawnY-CY*tileSize*tileSize)*SM, tileSize/2*SM, tileSize/2*SM);
+  }
 }
 
 boolean collisionBox(float x, float y, float xsize, float ysize, float x2, float y2) {

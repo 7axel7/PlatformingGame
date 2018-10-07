@@ -1,7 +1,8 @@
 
 //EDITOR VARIABLES
 int numTileTypes = 0;
-int[][] tileTypes = {{0, 1, 2, 3}, {4, 5, 6, 7}, {-1, -1, -1, -1}};
+int spawnPlaced = 0;
+int[][] tileTypes = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, -1, -1}};
 int[] tileTypeSelected = {0, 0};
 boolean selectingTile = false;
 boolean editing = false;
@@ -42,16 +43,62 @@ void edit() {
     int x = int(((mouseX)/SM+CX)/tileSize)+1;
     int y = int(((mouseY)/SM+CY)/tileSize)+1;
     int type = tileTypes[tileTypeSelected[0]][tileTypeSelected[1]];
-    fill(0, 0, 0, 0);
-    if (type == 1)fill(0, 0, 0, 150);
-    else if (type == 2) {
+    float drawx = (x-1)*tileSize;
+    float drawy = (y-1)*tileSize;
+    float xsize = tileSize;
+    float ysize = tileSize;
+    if (type == 3 || type == 6 || type == 7) {
+      if (cursorRotation == 0) {
+        drawy = ((y-1)*tileSize+tileSize*2/5);
+        ysize = ceil(tileSize*1/5+1);
+      }
+      if (cursorRotation == 1) {
+        drawx = ((x-1)*tileSize+tileSize*2/5);
+        xsize = ceil(tileSize*1/5+1);
+      }
+      if (cursorRotation == 2) {
+        drawy = ((y-1)*tileSize-tileSize*2/5);
+        ysize = ceil(tileSize*1/5+1);
+      }
+      if (cursorRotation == 3) {
+        drawx = ((x-1)*tileSize-tileSize*2/5);
+        xsize = ceil(tileSize*1/5+1);
+      }
+    } else if (type == 4 || type == 5 || type == 8) {
+      xsize = ceil(tileSize/2);
+      ysize = ceil(tileSize/2);
+    } 
+    if (type == 1) {
+      fill(0, 0, 0, 150);
+    } else if (type == 2) {
       fill(255, 0, 0, 150);
+    } else if (type == 3) {
+      fill(100, 255, 100, 150);
+    } else if (type == 6) {
+      fill(255, 150, 100, 150);
+    } else if (type == 7) {
+      fill(100, 150, 255, 150);
+    } else if (type == 4) {
+      fill(255, 0, 0, 150);
+    } else if (type == 5) {
+      fill(0, 0, 0, 150);
+    } if (type == 8) {
+      fill(100, 100, 255, 150);
     }
-    rectMode(CORNER);
-    rect(((x-1)*tileSize-CX)*SM, ((y-1)*tileSize-CY)*SM, tileSize*SM, tileSize*SM);
-
+    rectMode(CENTER);
+    if (type != 8) {
+      rect((drawx-CX*tileSize+0.5*tileSize)*SM, (drawy-CY*tileSize+0.5*tileSize)*SM, xsize*SM, ysize*SM);
+    } else {
+      ellipse((drawx-CX*tileSize+0.5*tileSize)*SM, (drawy-CY*tileSize+0.5*tileSize)*SM, xsize*SM, ysize*SM);
+    }
     if (mouse) { //Place tile
-      placeBlock(x, y, type, true, cursorRotation);
+      if (type != 8)
+        placeBlock(x, y, type, true, cursorRotation);
+      else {
+        spawnPlaced = 100;
+        spawnX = drawx+tileSize;
+        spawnY = drawy+tileSize;
+      }
     }
   }
   if (p.keys[7]) {
@@ -73,8 +120,6 @@ void edit() {
     line(-CX*SM, (i*tileSize-CY)*SM, (tileSize*mapwidth-CX)*SM, (i*tileSize-CY)*SM);
   }
   noStroke();
-  if (mouse) {
-  }
   if (selectingTile) {
     selectTile();
   }

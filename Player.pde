@@ -27,6 +27,9 @@ class Player {
     y = spawnY;
     jumps = maxjumps-1;
     dy = 0;
+    t = 0;
+    active = false;
+    gravity = abs(gravity);
   }
 
   void display() {
