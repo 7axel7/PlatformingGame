@@ -99,6 +99,7 @@ void updateScreen() {
   }
   if (spawnPlaced > 0) {
     spawnPlaced -=1;
+    fill(100,100,255,spawnPlaced*2.5);
     if (editing) {
       ellipse((spawnX-CX*tileSize-0.5*tileSize)*SM, (spawnY-CY*tileSize-0.5*tileSize)*SM, tileSize/2*SM, tileSize/2*SM);
     } else
