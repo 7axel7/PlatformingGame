@@ -4,8 +4,6 @@
  * Feature goals:
  * Server
  * Moving Blocks
- *    
- *
  */
 
 Player p;
@@ -31,6 +29,7 @@ void startGame() {
     textSize = int(0.01*min(width, height));
     p = new Player(spawnX, spawnY);
     tiles = new ArrayList<Tile>();
+    Enemies = new ArrayList<Enemy>();
     choosingFile = false;
     noStroke();
     //                     t,   x,   y,  dy,jumps
